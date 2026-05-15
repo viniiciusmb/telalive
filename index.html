@@ -66,23 +66,54 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .tool-btn:hover { background: #2a2a2a; color: #fff; }
 
 /* CENTER */
-.center-panel { flex: 1; display: flex; flex-direction: column; background: #141414; min-width: 0; }
-.cp-header { padding: 7px 14px; font-size: 12px; font-weight: 600; color: #aaa; border-bottom: 1px solid #222; display: flex; align-items: center; gap: 10px; }
-.cp-header .topic-tag { background: #2a2a2a; border-radius: 4px; padding: 2px 8px; font-size: 11px; color: #ccc; }
+.center-panel { flex: 1; display: flex; flex-direction: column; background: #2a2a2a; min-width: 0; }
+.cp-header { padding: 7px 14px; font-size: 12px; font-weight: 600; color: #aaa; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px; background: #222; }
+.cp-header .topic-tag { background: #333; border-radius: 4px; padding: 2px 8px; font-size: 11px; color: #ccc; }
 .cp-header .top100 { background: #2a1a00; color: #ffaa00; border-radius: 4px; padding: 2px 8px; font-size: 11px; }
 .cp-header-icons { margin-left: auto; display: flex; gap: 8px; color: #555; }
-.cp-body { flex: 1; display: flex; overflow: hidden; }
+.cp-body { flex: 1; display: flex; overflow: hidden; background: #2a2a2a; }
 
 /* PHONE PREVIEW */
 .phone-wrap { display: flex; align-items: center; justify-content: center; padding: 12px; background: #111; border-right: 1px solid #222; width: 230px; flex-shrink: 0; }
 .phone { width: 170px; height: 300px; background: #000; border-radius: 28px; border: 3px solid #333; overflow: hidden; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
 .phone-screen { width: 100%; height: 100%; background: linear-gradient(180deg, #1a0a1a 0%, #0d0820 50%, #000 100%); position: relative; overflow: hidden; }
-.phone-video-bg { position: absolute; inset: 0; background: linear-gradient(160deg, #1a1040 0%, #2d1060 30%, #1a0830 60%, #000 100%); }
-.phone-streamer { position: absolute; bottom: 0; left: 0; right: 0; height: 70%; background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 40px; }
-.phone-person { width: 90px; height: 130px; background: linear-gradient(180deg, #3a2a4a 0%, #2a1a3a 100%); border-radius: 12px 12px 0 0; position: relative; overflow: hidden; }
-.phone-person::before { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 30px; height: 30px; background: #5a3a6a; border-radius: 50%; }
-.phone-person::after { content: '🎧'; position: absolute; top: 2px; left: 50%; transform: translateX(-50%); font-size: 22px; }
-.phone-mic { position: absolute; top: 20%; right: 15%; font-size: 22px; opacity: 0.8; }
+.phone-video-bg { position: absolute; inset: 0; background: linear-gradient(180deg, #1a0a2e 0%, #2d0e4a 25%, #1a0530 55%, #0a0018 100%); }
+/* Room background elements */
+.phone-room { position: absolute; inset: 0; overflow: hidden; }
+.phone-room-shelf { position: absolute; top: 18%; left: 5%; right: 5%; height: 6px; background: #3a2a4a; border-radius: 2px; box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+.phone-room-shelf::before { content:'📚🎮🏆'; position:absolute; bottom:6px; left:4px; font-size:11px; letter-spacing:2px; }
+.phone-room-light { position: absolute; top: 0; left: 20%; width: 60%; height: 40%; background: radial-gradient(ellipse at 50% 0%, rgba(120,60,200,0.35) 0%, transparent 70%); }
+.phone-room-light2 { position: absolute; top: 10%; right: -10%; width: 50%; height: 50%; background: radial-gradient(ellipse, rgba(255,50,100,0.18) 0%, transparent 70%); }
+/* Desk */
+.phone-desk { position: absolute; bottom: 35px; left: 0; right: 0; height: 45%; display: flex; align-items: flex-end; justify-content: center; }
+.phone-desk-surface { position: absolute; bottom: 0; left: 0; right: 0; height: 12px; background: linear-gradient(180deg, #2a1a3a, #1a0d28); border-top: 1px solid #4a2a6a; }
+/* Chair/Person */
+.phone-person-wrap { position: relative; display: flex; flex-direction: column; align-items: center; margin-bottom: 0px; }
+.phone-head { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #8B6914, #6B4F10); position: relative; z-index: 3; box-shadow: 0 2px 8px rgba(0,0,0,0.6); }
+.phone-head::after { content:''; position:absolute; top: -6px; left: -3px; right: -3px; height: 20px; background: #111; border-radius: 20px 20px 0 0; } /* headphones */
+.phone-headphone-band { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 44px; height: 10px; border: 3px solid #222; border-bottom: none; border-radius: 20px 20px 0 0; z-index: 4; }
+.phone-headphone-l { position: absolute; top: -6px; left: -8px; width: 10px; height: 14px; background: #333; border-radius: 4px; z-index: 4; }
+.phone-headphone-r { position: absolute; top: -6px; right: -8px; width: 10px; height: 14px; background: #333; border-radius: 4px; z-index: 4; }
+.phone-glasses { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 30px; height: 8px; z-index: 5; }
+.phone-glasses::before { content:''; position:absolute; left:0; width:12px; height:8px; border:1.5px solid rgba(150,200,255,0.6); border-radius:3px; background:rgba(100,180,255,0.1); }
+.phone-glasses::after { content:''; position:absolute; right:0; width:12px; height:8px; border:1.5px solid rgba(150,200,255,0.6); border-radius:3px; background:rgba(100,180,255,0.1); }
+.phone-body { width: 44px; height: 48px; background: linear-gradient(180deg, #4a3a6a, #2a1a4a); border-radius: 8px 8px 0 0; position: relative; z-index: 2; margin-top: -2px; }
+.phone-body::before { content:''; position:absolute; top:6px; left:50%; transform:translateX(-50%); width:28px; height:20px; background: rgba(255,255,255,0.05); border-radius:4px; } /* shirt detail */
+/* Microphone */
+.phone-mic-stand { position: absolute; bottom: 12px; right: 22%; z-index: 5; }
+.phone-mic-body { width: 10px; height: 20px; background: linear-gradient(180deg, #888, #555); border-radius: 5px 5px 2px 2px; margin: 0 auto; }
+.phone-mic-top { width: 14px; height: 18px; background: linear-gradient(135deg, #aaa, #666); border-radius: 7px 7px 4px 4px; margin-left: -2px; border: 1px solid #444; }
+.phone-mic-stem { width: 2px; height: 18px; background: #444; margin: 0 auto; }
+.phone-mic-base { width: 16px; height: 4px; background: #333; border-radius: 2px; margin: 0 auto; }
+/* PC monitor on desk */
+.phone-monitor { position: absolute; bottom: 12px; left: 10%; z-index: 4; }
+.phone-monitor-screen { width: 28px; height: 20px; background: linear-gradient(135deg, #0a2a4a, #1a1a3a); border: 1.5px solid #444; border-radius: 2px; display: flex; align-items: center; justify-content: center; }
+.phone-monitor-screen::before { content:''; display:block; width:20px; height:13px; background: linear-gradient(135deg, rgba(100,200,255,0.2), rgba(50,100,200,0.1)); border-radius:1px; }
+.phone-monitor-stand { width: 8px; height: 4px; background: #333; margin: 0 auto; }
+.phone-monitor-base { width: 14px; height: 2px; background: #444; margin: 0 auto; border-radius: 1px; }
+/* Glow effects */
+.phone-pc-glow { position: absolute; bottom: 28px; left: 8%; width: 35px; height: 20px; background: radial-gradient(ellipse, rgba(0,150,255,0.25) 0%, transparent 70%); z-index: 3; }
+.phone-mic { display: none; }
 .phone-overlay-top { position: absolute; top: 0; left: 0; right: 0; padding: 8px 8px 0; display: flex; align-items: flex-start; justify-content: space-between; }
 .phone-avatar-row { display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.5); border-radius: 20px; padding: 3px 6px; }
 .phone-av { width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg,#fe2c55,#ff7070); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: #fff; }
@@ -103,24 +134,57 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
 /* STREAM AREA */
 .stream-area { flex: 1; display: flex; flex-direction: column; }
-.stream-canvas { flex: 1; background: #0a0a0a; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-.stream-canvas-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #0d0820 0%, #1a0830 50%, #0a0010 100%); }
-.stream-empty { position: relative; z-index: 1; text-align: center; color: #333; }
-.stream-empty .icon { font-size: 40px; margin-bottom: 8px; }
-.stream-empty p { font-size: 12px; }
+.stream-canvas { flex: 1; background: #2a2a2a; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+
+/* 16:9 STREAM SCREEN */
+.stream-screen-wrap { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 16px; }
+.stream-screen { aspect-ratio: 16/9; height: 100%; max-height: calc(100% - 32px); max-width: calc(100% - 32px); background: #000; border-radius: 4px; position: relative; overflow: hidden; box-shadow: 0 0 0 2px #444, 0 4px 24px rgba(0,0,0,0.7); }
+#stream-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Room inside stream screen */
+.ss-bg { position:absolute; inset:0; background: linear-gradient(180deg, #150828 0%, #2a1050 35%, #1a0830 70%, #080010 100%); }
+.ss-light-purple { position:absolute; top:0; left:15%; width:40%; height:55%; background: radial-gradient(ellipse at 50% 0%, rgba(130,60,220,0.45) 0%, transparent 70%); }
+.ss-light-red { position:absolute; top:5%; right:5%; width:35%; height:45%; background: radial-gradient(ellipse, rgba(255,40,80,0.2) 0%, transparent 70%); }
+.ss-shelf { position:absolute; top:12%; left:8%; right:8%; height:3%; background: linear-gradient(180deg,#3a2a50,#2a1a3a); border-radius:2px; box-shadow:0 2px 6px rgba(0,0,0,0.5); display:flex; align-items:center; }
+.ss-shelf-items { font-size:clamp(10px,1.5vw,18px); padding:2px 8px; }
+.ss-desk { position:absolute; bottom:0; left:0; right:0; height:55%; display:flex; align-items:flex-end; justify-content:center; gap:2%; }
+.ss-desk-top { position:absolute; bottom:0; left:0; right:0; height:8%; background: linear-gradient(180deg,#2a1a3a,#180d28); border-top:2px solid #4a2a6a; }
+.ss-pc-glow { position:absolute; bottom:8%; left:22%; width:12%; height:20%; background: radial-gradient(ellipse, rgba(0,150,255,0.3) 0%, transparent 70%); }
+.ss-monitor { position:relative; z-index:3; display:flex; flex-direction:column; align-items:center; margin-bottom:8%; }
+.ss-monitor-screen { width:clamp(50px,8vw,110px); height:clamp(35px,5.5vw,76px); background:linear-gradient(135deg,#0a2a4a,#1a1a3a); border:2px solid #555; border-radius:4px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.ss-monitor-content { width:85%; height:80%; background:linear-gradient(135deg,rgba(0,180,255,0.15),rgba(80,0,255,0.1)); border-radius:2px; position:relative; }
+.ss-monitor-content::before { content:''; position:absolute; top:20%; left:10%; right:10%; height:12%; background:rgba(255,255,255,0.08); border-radius:1px; }
+.ss-monitor-content::after { content:''; position:absolute; top:42%; left:10%; right:30%; height:8%; background:rgba(255,255,255,0.05); border-radius:1px; }
+.ss-monitor-stand { width:clamp(4px,0.5vw,8px); height:clamp(8px,1.2vw,18px); background:#444; margin:0 auto; }
+.ss-monitor-base { width:clamp(20px,3vw,40px); height:clamp(3px,0.4vw,6px); background:#555; margin:0 auto; border-radius:1px; }
+.ss-person { position:relative; z-index:4; display:flex; flex-direction:column; align-items:center; margin-bottom:0; }
+.ss-head { width:clamp(28px,4.5vw,60px); height:clamp(28px,4.5vw,60px); border-radius:50%; background:linear-gradient(135deg,#8B6914,#6B4F10); position:relative; }
+.ss-hp-band { position:absolute; top:-22%; left:50%; transform:translateX(-50%); width:115%; height:45%; border:clamp(2px,0.4vw,5px) solid #222; border-bottom:none; border-radius:50% 50% 0 0; z-index:2; }
+.ss-hp-l { position:absolute; top:-18%; left:-14%; width:22%; height:40%; background:#333; border-radius:3px; z-index:2; }
+.ss-hp-r { position:absolute; top:-18%; right:-14%; width:22%; height:40%; background:#333; border-radius:3px; z-index:2; }
+.ss-glasses { position:absolute; top:38%; left:50%; transform:translateX(-50%); width:75%; height:22%; z-index:3; display:flex; gap:3px; justify-content:center; }
+.ss-glasses::before,.ss-glasses::after { content:''; flex:1; border:1.5px solid rgba(150,210,255,0.7); border-radius:3px; background:rgba(100,180,255,0.12); }
+.ss-body { width:clamp(36px,5.5vw,75px); height:clamp(36px,5.5vw,70px); background:linear-gradient(180deg,#4a3a6a,#2a1a4a); border-radius:6px 6px 0 0; margin-top:-2px; }
+.ss-arms { width:clamp(50px,7.5vw,100px); height:clamp(10px,1.5vw,18px); background:linear-gradient(180deg,#3a2a5a,#2a1a3a); border-radius:4px; margin-top:-2px; }
+.ss-mic { position:relative; z-index:3; display:flex; flex-direction:column; align-items:center; margin-bottom:8%; }
+.ss-mic-top { width:clamp(10px,1.6vw,22px); height:clamp(14px,2.2vw,30px); background:linear-gradient(135deg,#aaa,#666); border-radius:50% 50% 30% 30%; border:1px solid #444; }
+.ss-mic-body { width:clamp(7px,1vw,14px); height:clamp(12px,1.8vw,22px); background:linear-gradient(180deg,#888,#555); margin:0 auto; }
+.ss-mic-stem { width:2px; height:clamp(10px,1.5vw,20px); background:#444; margin:0 auto; }
+.ss-mic-base { width:clamp(12px,2vw,26px); height:clamp(3px,0.4vw,5px); background:#333; margin:0 auto; border-radius:2px; }
+.ss-keyboard { width:clamp(40px,6vw,80px); height:clamp(6px,0.8vw,10px); background:linear-gradient(180deg,#333,#222); border-radius:2px; position:absolute; bottom:9%; left:50%; transform:translateX(-50%); z-index:3; }
 .gift-notifs { position: absolute; bottom: 60px; left: 10px; z-index: 10; display: flex; flex-direction: column; gap: 4px; pointer-events: none; }
 .gift-notif { background: linear-gradient(90deg, rgba(254,44,85,0.9), rgba(255,100,100,0.7)); border-radius: 20px; padding: 5px 12px 5px 5px; display: flex; align-items: center; gap: 6px; animation: slideIn 0.3s ease; font-size: 11px; color: #fff; font-weight: 600; max-width: 200px; }
 .gift-notif .gn-av { width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; }
 @keyframes slideIn { from { opacity:0; transform: translateX(-20px); } to { opacity:1; transform:translateX(0); } }
 @keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
 
-.gifts-tray { padding: 6px 12px; background: #181818; border-top: 1px solid #222; display: flex; gap: 6px; align-items: center; }
-.gtray-gift { width: 48px; height: 48px; background: #222; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; font-size: 20px; }
+.gifts-tray { padding: 6px 12px; background: #222; border-top: 1px solid #333; display: flex; gap: 6px; align-items: center; }
+.gtray-gift { width: 48px; height: 48px; background: #333; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; font-size: 20px; }
 .gtray-gift .gbadge { position: absolute; top: -4px; right: -4px; background: #fe2c55; color: #fff; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 8px; }
 .gtray-gift .gtimer { font-size: 8px; color: #ffaa00; font-weight: 700; margin-top: 1px; }
 .more-tag { font-size: 10px; color: #fe2c55; font-weight: 700; padding: 0 4px; }
 
-.bottom-controls { border-top: 1px solid #222; padding: 7px 12px; display: flex; flex-direction: column; gap: 6px; background: #181818; }
+.bottom-controls { border-top: 1px solid #333; padding: 7px 12px; display: flex; flex-direction: column; gap: 6px; background: #222; }
 .ctrl-row { display: flex; align-items: center; gap: 8px; }
 .ctrl-icon { background: none; border: none; color: #666; cursor: pointer; font-size: 14px; padding: 2px; }
 .ctrl-icon:hover { color: #fff; }
@@ -292,54 +356,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       </div>
     </div>
     <div class="cp-body">
-      <!-- PHONE -->
-      <div class="phone-wrap">
-        <div class="phone">
-          <div class="phone-notch"></div>
-          <div class="phone-screen">
-            <div class="phone-video-bg"></div>
-            <div class="phone-streamer">
-              <div class="phone-person"></div>
-            </div>
-            <div class="phone-mic">🎙</div>
-            <div class="phone-overlay-top">
-              <div class="phone-avatar-row">
-                <div class="phone-av">V</div>
-                <div>
-                  <div class="phone-name">viniciusmb</div>
-                  <div class="phone-viewers" id="ph-viewers">8.3M views</div>
-                </div>
-              </div>
-              <div><div class="phone-live-tag">LIVE</div></div>
-            </div>
-            <div class="phone-comments" id="phone-comments">
-              <div class="phone-comment"><span class="pc-name">brasil🇧🇷</span><span class="pc-text">força!!</span></div>
-              <div class="phone-comment"><span class="pc-name">Swagtan6</span><span class="pc-text">🌹 x36</span></div>
-              <div class="phone-comment"><span class="pc-name">hllhulo</span><span class="pc-text">🥞 x4</span></div>
-            </div>
-            <div class="phone-actions">
-              <div class="ph-act">❤️</div>
-              <div class="ph-act">💬</div>
-              <div class="ph-act">➕</div>
-              <div class="ph-act">↗️</div>
-            </div>
-            <div class="phone-bar">
-              <div class="phone-gift-row">
-                <span class="ph-gift">🌹</span><span class="ph-gift">🎂</span><span class="ph-gift">🌌</span>
-              </div>
-              <span class="phone-gift-count" id="ph-gift-count">+899</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- STREAM AREA -->
       <div class="stream-area">
         <div class="stream-canvas">
-          <div class="stream-canvas-bg"></div>
-          <div class="stream-empty">
-            <div class="icon">🎬</div>
-            <p>Streaming View</p>
+          <!-- 16:9 preview screen centered -->
+          <div class="stream-screen-wrap">
+            <div class="stream-screen">
+              <video id="stream-video" autoplay loop muted playsinline>
+                <source src="ssstik_io_1778809975031.mp4" type="video/mp4">
+              </video>
+            </div>
           </div>
           <div class="gift-notifs" id="gift-notifs"></div>
         </div>
@@ -467,6 +493,7 @@ function startLive() {
   likes = viewers;
   document.getElementById('popup').style.display = 'none';
   updateStats();
+  initTimers();
 }
 
 function fmtNum(n) {
@@ -487,36 +514,59 @@ function updateStats() {
   document.getElementById('viewers-val').textContent = fmtNum(viewers);
   document.getElementById('followers-val').textContent = fmtNum(followers);
   document.getElementById('likes-val').textContent = fmtNum(likes);
-  document.getElementById('ph-viewers').textContent = fmtNum(viewers) + ' views';
-  document.getElementById('stop-timer').textContent = fmtTime(liveSeconds);
 }
 
-// CLOCK
-setInterval(() => {
-  clockS++;
-  if(clockS>=60){clockS=0;clockM++;}
-  if(clockM>=60){clockM=0;clockH++;}
-  if(clockH>=24) clockH=0;
-  document.getElementById('rec-clock').textContent =
-    `${String(clockH).padStart(2,'0')}:${String(clockM).padStart(2,'0')}:${String(clockS).padStart(2,'0')}`;
-}, 1000);
+function initTimers() {
+  // CLOCK
+  setInterval(() => {
+    clockS++;
+    if(clockS>=60){clockS=0;clockM++;}
+    if(clockM>=60){clockM=0;clockH++;}
+    if(clockH>=24) clockH=0;
+    document.getElementById('rec-clock').textContent =
+      `${String(clockH).padStart(2,'0')}:${String(clockM).padStart(2,'0')}:${String(clockS).padStart(2,'0')}`;
+  }, 1000);
 
-// LIVE TIMER
-setInterval(() => {
-  liveSeconds++;
-  document.getElementById('stop-timer').textContent = fmtTime(liveSeconds);
-}, 1000);
+  // LIVE TIMER
+  setInterval(() => {
+    liveSeconds++;
+    document.getElementById('stop-timer').textContent = fmtTime(liveSeconds);
+  }, 1000);
 
-// INCREMENT STATS
-setInterval(() => {
-  diamonds += Math.floor(Math.random() * 30) + 5;
-  viewers += Math.floor(Math.random() * 200) - 30;
-  if(viewers < 100) viewers = 100;
-  likes += Math.floor(Math.random() * 500) + 50;
-  if(Math.random() < 0.3) { gifters += Math.floor(Math.random() * 3) + 1; }
-  if(Math.random() < 0.2) { followers += Math.floor(Math.random() * 5) + 1; }
-  updateStats();
-}, 2000);
+  // INCREMENT STATS
+  setInterval(() => {
+    diamonds += Math.floor(Math.random() * 30) + 5;
+    viewers += Math.floor(Math.random() * 200) - 30;
+    if(viewers < 100) viewers = 100;
+    likes += Math.floor(Math.random() * 500) + 50;
+    if(Math.random() < 0.3) { gifters += Math.floor(Math.random() * 3) + 1; }
+    if(Math.random() < 0.2) { followers += Math.floor(Math.random() * 5) + 1; }
+    updateStats();
+  }, 2000);
+
+  // Gift counter
+  setInterval(() => {
+    const el = document.getElementById('gift-plus');
+    if(!el) return;
+    const current = parseInt(el.textContent.replace('+','')) || 899;
+    el.textContent = '+' + (current + Math.floor(Math.random()*5+1));
+  }, 3000);
+
+  // Top gifter increment
+  setInterval(() => {
+    const el = document.getElementById('tg1-val');
+    if(!el) return;
+    const v = parseFloat(el.textContent) || 444.4;
+    el.textContent = (v + (Math.random()*2)).toFixed(1) + 'K';
+  }, 5000);
+
+  // Banner rotation
+  setInterval(rotateBanners, 4000);
+
+  // Chat + follower toasts
+  setTimeout(autoChat, 800);
+  setTimeout(showFollowerToast, 5000);
+}
 
 // CHAT MESSAGES POOL
 const chatPool = [
@@ -590,24 +640,12 @@ function showGiftNotif(name, emoji, count) {
   while(box.children.length > 3) box.removeChild(box.firstChild);
 }
 
-// Phone chat update
-const phoneComments = document.getElementById('phone-comments');
-function addPhoneComment(name, text) {
-  const el = document.createElement('div');
-  el.className = 'phone-comment';
-  el.innerHTML = `<span class="pc-name">${name}</span><span class="pc-text">${text}</span>`;
-  phoneComments.appendChild(el);
-  while(phoneComments.children.length > 3) phoneComments.removeChild(phoneComments.firstChild);
-}
-
 // Auto chat
 let chatIdx = 0;
 function autoChat() {
   const msg = chatPool[chatIdx % chatPool.length];
   chatIdx++;
   addChatMsg(msg);
-  if(msg.gift) addPhoneComment(msg.name, msg.gift + ' ×' + msg.giftCount);
-  else if(msg.text) addPhoneComment(msg.name, msg.text.substring(0,20) + (msg.text.length>20?'...':''));
   const delay = 800 + Math.random() * 2200;
   setTimeout(autoChat, delay);
 }
@@ -646,7 +684,6 @@ function rotateBanners() {
   }
   bannerIdx++;
 }
-setInterval(rotateBanners, 4000);
 
 // Send chat from input
 function sendChat(e) {
@@ -660,29 +697,12 @@ function sendChat(e) {
   }
 }
 
-// Gift counter increment
-setInterval(() => {
-  const el = document.getElementById('gift-plus');
-  const current = parseInt(el.textContent.replace('+','')) || 899;
-  el.textContent = '+' + (current + Math.floor(Math.random()*5+1));
-  document.getElementById('ph-gift-count').textContent = el.textContent;
-}, 3000);
-
-// Top gifter increment
-setInterval(() => {
-  const el = document.getElementById('tg1-val');
-  const v = parseFloat(el.textContent) || 444.4;
-  el.textContent = (v + (Math.random()*2)).toFixed(1) + 'K';
-}, 5000);
-
-// INIT — populate initial messages
+// INIT — populate initial messages after popup closes (called by startLive → initTimers)
 window.onload = () => {
   const initMsgs = [
     chatPool[0], chatPool[1], chatPool[13], chatPool[2], chatPool[14], chatPool[3], chatPool[15], chatPool[4]
   ];
   initMsgs.forEach(m => addChatMsg(m));
-  setTimeout(autoChat, 1500);
-  setTimeout(showFollowerToast, 5000);
 };
 </script>
 </body>
