@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok LIVE Studio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a1a; color: #e0e0e0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; font-size: 13px; }
+
+  /* Top bar */
+  .topbar { background: #111; display: flex; align-items: center; padding: 0 12px; height: 38px; border-bottom: 1px solid #2a2a2a; gap: 10px; }
+  .tiktok-logo { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; color: #fff; }
+  .tiktok-logo svg { width: 20px; height: 20px; }
+  .live-badge { background: #fe2c55; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+  .stats-bar { display: flex; gap: 20px; margin-left: 12px; flex: 1; }
+  .stat { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #aaa; }
+  .stat span.val { color: #4caf8a; font-weight: 600; }
+  .stat span.val.white { color: #fff; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+  .icon-btn { width: 26px; height: 26px; border-radius: 50%; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #aaa; }
+  .icon-btn:hover { color: #fff; }
+  .avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #fe2c55, #ff6b6b); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; position: relative; }
+  .avatar .notif { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #fe2c55; border-radius: 50%; border: 1px solid #111; }
+  .win-btn { background: transparent; border: none; cursor: pointer; color: #888; font-size: 14px; padding: 2px 6px; }
+  .win-btn:hover { color: #fff; }
+
+  /* Main layout */
+  .main { display: flex; flex: 1; overflow: hidden; }
+
+  /* Left panel - Scenes */
+  .left-panel { width: 220px; background: #1e1e1e; border-right: 1px solid #2a2a2a; display: flex; flex-direction: column; }
+  .panel-title { padding: 10px 14px; font-size: 13px; font-weight: 600; color: #fff; border-bottom: 1px solid #2a2a2a; }
+  .tabs { display: flex; border-bottom: 1px solid #2a2a2a; }
+  .tab { flex: 1; padding: 7px 0; text-align: center; font-size: 12px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; }
+  .tab.active { color: #fff; border-bottom: 2px solid #fe2c55; }
+  .scene-group { padding: 10px 14px; }
+  .scene-group-title { font-size: 11px; color: #666; margin-bottom: 8px; font-weight: 600; }
+  .scene-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; cursor: pointer; color: #ccc; margin-bottom: 2px; }
+  .scene-item:hover { background: #2a2a2a; }
+  .scene-item.active { background: #2a2a2a; color: #fff; }
+  .scene-icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; opacity: 0.7; }
+  .add-btn { display: flex; align-items: center; gap: 6px; color: #888; font-size: 12px; padding: 6px 10px; cursor: pointer; }
+  .add-btn:hover { color: #fe2c55; }
+  .scene-nav { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; border-top: 1px solid #2a2a2a; margin-top: auto; }
+  .scene-nav-item { padding: 8px 10px; border-radius: 6px; cursor: pointer; color: #aaa; }
+  .scene-nav-item:hover { background: #2a2a2a; color: #fff; }
+  .add-scene-btn { margin: 10px 14px; background: #2a2a2a; border: none; color: #ccc; padding: 8px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; width: calc(100% - 28px); }
+  .add-scene-btn:hover { background: #333; }
+  .tools-title { padding: 10px 14px; font-size: 13px; font-weight: 600; color: #fff; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a; }
+  .tools-icons { display: flex; gap: 4px; padding: 10px 14px; }
+  .tool-icon { width: 36px; height: 36px; background: #2a2a2a; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #aaa; font-size: 16px; }
+  .tool-icon:hover { background: #333; color: #fff; }
+
+  /* Center panel */
+  .center-panel { flex: 1; display: flex; flex-direction: column; background: #161616; }
+  .center-title { padding: 10px 14px; font-size: 13px; font-weight: 600; color: #fff; border-bottom: 1px solid #2a2a2a; }
+  .stream-view { flex: 1; display: flex; flex-direction: column; }
+  .stream-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #2a2a2a; }
+  .stream-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #4a4a8a, #6a4a8a); display: flex; align-items: center; justify-content: center; }
+  .stream-info { flex: 1; }
+  .stream-name { font-size: 15px; font-weight: 700; color: #fff; }
+  .stream-sub { font-size: 12px; color: #4caf8a; display: flex; align-items: center; gap: 4px; }
+  .stream-tags { display: flex; gap: 8px; margin-top: 6px; }
+  .tag { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #ccc; }
+  .edit-btn { background: transparent; border: none; color: #888; cursor: pointer; font-size: 16px; }
+  .stream-canvas { flex: 1; background: #0a0a0a; display: flex; align-items: center; justify-content: center; color: #333; }
+  .bottom-bar { border-top: 1px solid #2a2a2a; padding: 8px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .controls-row { display: flex; align-items: center; gap: 10px; }
+  .ctrl-btn { background: transparent; border: none; color: #888; cursor: pointer; font-size: 14px; }
+  .slider { -webkit-appearance: none; height: 3px; border-radius: 2px; background: #444; outline: none; width: 100px; }
+  .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #fff; cursor: pointer; }
+  .live-dot { display: flex; align-items: center; gap: 6px; margin-left: auto; font-size: 12px; font-weight: 600; color: #fff; }
+  .red-dot { width: 8px; height: 8px; border-radius: 50%; background: #fe2c55; }
+  .rec-row { display: flex; align-items: center; gap: 10px; }
+  .rec-info { display: flex; align-items: center; gap: 6px; color: #888; font-size: 12px; }
+  .rec-dot { width: 8px; height: 8px; border-radius: 50%; background: #fe2c55; }
+  .rec-time { color: #ccc; }
+  .pause-btn { background: #2a2a2a; border: none; color: #ccc; padding: 7px 20px; border-radius: 6px; cursor: pointer; font-size: 12px; margin-left: auto; }
+  .pause-btn:hover { background: #333; }
+  .stop-btn { background: #fe2c55; border: none; color: #fff; padding: 7px 20px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+
+  /* Gifts row */
+  .gifts-row { display: flex; gap: 6px; padding: 8px 14px; background: #1a1a1a; border-top: 1px solid #2a2a2a; }
+  .gift { width: 52px; height: 52px; background: #2a2a2a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; position: relative; }
+  .gift .badge { position: absolute; top: -4px; right: -4px; background: #fe2c55; color: #fff; font-size: 9px; font-weight: 700; padding: 1px 4px; border-radius: 8px; }
+  .gift .timer { position: absolute; bottom: 2px; font-size: 9px; color: #fe2c55; font-weight: 700; }
+  .gift.more { color: #fe2c55; font-size: 12px; font-weight: 700; }
+
+  /* Right panel */
+  .right-panel { width: 300px; background: #1e1e1e; border-left: 1px solid #2a2a2a; display: flex; flex-direction: column; }
+  .right-top { padding: 10px 14px; border-bottom: 1px solid #2a2a2a; }
+  .live-data-title { display: flex; align-items: center; justify-content: space-between; }
+  .live-data-title span { font-size: 14px; font-weight: 700; color: #fff; }
+  .home-icon { color: #888; cursor: pointer; }
+  .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+  .data-cell { }
+  .data-label { font-size: 11px; color: #888; margin-bottom: 4px; }
+  .data-val { font-size: 22px; font-weight: 700; color: #fff; }
+  .chat-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .chat-header { display: flex; align-items: center; padding: 8px 14px; border-bottom: 1px solid #2a2a2a; gap: 8px; }
+  .chat-title { flex: 1; text-align: center; font-size: 13px; font-weight: 600; color: #fff; }
+  .chat-icon { color: #888; cursor: pointer; }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 8px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+  .msg { display: flex; align-items: flex-start; gap: 8px; }
+  .msg-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; }
+  .msg-content { flex: 1; }
+  .msg-name { font-size: 11px; font-weight: 600; color: #fe2c55; margin-bottom: 2px; display: flex; align-items: center; gap: 4px; }
+  .verified { width: 12px; height: 12px; background: #4a9eff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 8px; color: #fff; }
+  .msg-text { font-size: 12px; color: #ccc; line-height: 1.4; }
+  .msg-gift { font-size: 12px; color: #888; display: flex; align-items: center; gap: 4px; }
+  .gift-emoji { font-size: 18px; }
+  .chat-input-row { padding: 8px 12px; border-top: 1px solid #2a2a2a; display: flex; gap: 8px; align-items: center; }
+  .chat-input { flex: 1; background: #2a2a2a; border: none; border-radius: 20px; padding: 7px 12px; color: #ccc; font-size: 12px; outline: none; }
+  .chat-input::placeholder { color: #555; }
+  .send-btn { background: transparent; border: none; color: #888; cursor: pointer; font-size: 18px; }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="tiktok-logo">
+    <svg viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.94a8.18 8.18 0 0 0 4.78 1.52V7.01a4.85 4.85 0 0 1-1.01-.32z"/></svg>
+    TikTok
+    <span class="live-badge">LIVE Studio</span>
+  </div>
+  <div class="stats-bar">
+    <div class="stat">CPU <span class="val">8%</span></div>
+    <div class="stat">Memory <span class="val">0.6 GB</span></div>
+    <div class="stat">Kbps upload <span class="val white">872kb/s</span></div>
+    <div class="stat">Frame Drops <span class="val white">30</span></div>
+    <div class="stat">Encoder Fps <span class="val white">30</span></div>
+  </div>
+  <div class="topbar-right">
+    <button class="icon-btn">?</button>
+    <div class="avatar">T<span class="notif"></span></div>
+    <button class="win-btn">—</button>
+    <button class="win-btn">⬜</button>
+    <button class="win-btn">✕</button>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- Left Panel -->
+  <div class="left-panel">
+    <div class="panel-title">Scenes</div>
+    <div class="tabs">
+      <div class="tab active">🖼 Landscape</div>
+      <div class="tab">📱 Portrait</div>
+    </div>
+    <div class="scene-group">
+      <div class="scene-group-title">Full screen game</div>
+      <div class="scene-item active">
+        <span class="scene-icon">🖥</span> Dell Display2
+      </div>
+      <div class="scene-item">
+        <span class="scene-icon">🔔</span> Subscribe alert
+      </div>
+      <div class="scene-item">
+        <span class="scene-icon">🎯</span> Follower goal
+      </div>
+      <div class="scene-item">
+        <span class="scene-icon">💬</span> Chatbox
+      </div>
+      <div class="scene-item">
+        <span class="scene-icon">📷</span> Camera
+      </div>
+      <div class="add-btn">+ Add new (5/10)</div>
+    </div>
+    <div style="padding: 0 14px; border-top: 1px solid #2a2a2a; margin-top: 6px;">
+      <div class="scene-nav-item">personal broadcast screen</div>
+      <div class="scene-nav-item">Talk screen</div>
+    </div>
+    <div style="margin-top: auto;">
+      <div style="padding: 10px 14px;">
+        <button class="add-scene-btn">+ Add scene</button>
+      </div>
+      <div class="tools-title">Tools</div>
+      <div class="tools-icons">
+        <div class="tool-icon">✨</div>
+        <div class="tool-icon">🎬</div>
+        <div class="tool-icon">📊</div>
+        <div class="tool-icon">🎮</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Center Panel -->
+  <div class="center-panel">
+    <div class="center-title">Streaming View</div>
+    <div class="stream-view">
+      <div class="stream-header">
+        <div class="stream-avatar">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.94a8.18 8.18 0 0 0 4.78 1.52V7.01a4.85 4.85 0 0 1-1.01-.32z"/></svg>
+        </div>
+        <div class="stream-info">
+          <div class="stream-name">TikTok LIVE Studio</div>
+          <div class="stream-sub">✅ Let's get started</div>
+          <div class="stream-tags">
+            <div class="tag">👥 452k</div>
+            <div class="tag">🎮 Gaming</div>
+            <div class="tag">⭐ Weekly top 100</div>
+          </div>
+        </div>
+        <button class="edit-btn">✏️</button>
+      </div>
+
+      <div class="stream-canvas">
+        <!-- Empty stream canvas -->
+      </div>
+
+      <div class="gifts-row">
+        <div class="gift">🎮</div>
+        <div class="gift">🎁<span class="badge">12</span><span class="timer">14:59</span></div>
+        <div class="gift">🎯<span class="timer">+899</span></div>
+      </div>
+
+      <div class="bottom-bar">
+        <div class="controls-row">
+          <button class="ctrl-btn">⚙️</button>
+          <button class="ctrl-btn">🔊</button>
+          <input type="range" class="slider" value="60">
+          <button class="ctrl-btn">🎙</button>
+          <input type="range" class="slider" value="70">
+          <div class="live-dot" style="margin-left: auto;">
+            <span class="red-dot"></span> LIVE
+          </div>
+        </div>
+        <div class="rec-row">
+          <div class="rec-info">
+            <span class="rec-dot"></span>
+            <span class="rec-time">13:23:24</span>
+          </div>
+          <button class="pause-btn">Pause stream</button>
+          <button class="stop-btn">00:34:55</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="right-panel">
+    <div class="right-top">
+      <div class="live-data-title">
+        <span>LIVE Data</span>
+        <span class="home-icon">🏠</span>
+      </div>
+      <div class="data-grid">
+        <div class="data-cell">
+          <div class="data-label">Diamonds</div>
+          <div class="data-val">4,345</div>
+        </div>
+        <div class="data-cell">
+          <div class="data-label">Total viewers</div>
+          <div class="data-val">8.3M</div>
+        </div>
+        <div class="data-cell">
+          <div class="data-label">Gifters</div>
+          <div class="data-val">629</div>
+        </div>
+        <div class="data-cell">
+          <div class="data-label">Gifters</div>
+          <div class="data-val">629</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-section">
+      <div class="chat-header">
+        <span class="chat-icon">👥</span>
+        <span class="chat-title">LIVE chat</span>
+        <span class="chat-icon">⚙️</span>
+        <span class="chat-icon">📋</span>
+      </div>
+
+      <div class="chat-messages">
+        <div class="msg">
+          <div class="msg-avatar" style="background: linear-gradient(135deg, #8a4a4a, #aa6666); border-radius:50%; width:28px; height:28px;"></div>
+          <div class="msg-content">
+            <div class="msg-name">Tom Riri</div>
+            <div class="msg-text">god geez how the hack u did that move right? dont know how you did it</div>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-avatar" style="background: linear-gradient(135deg, #4a6a8a, #6a88aa); border-radius:50%; width:28px; height:28px;"></div>
+          <div class="msg-content">
+            <div class="msg-name">Sarah <span class="verified">✓</span></div>
+            <div class="msg-text">@rowdywrecks knew for a fact it wasnt going to last LUL just too good to be true</div>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-avatar" style="background: linear-gradient(135deg, #4a8a5a, #6aaa6a); border-radius:50%; width:28px; height:28px;"></div>
+          <div class="msg-content">
+            <div class="msg-name">Swagtan6</div>
+            <div class="msg-gift">sent <span class="gift-emoji">💎</span> x6</div>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-avatar" style="background: linear-gradient(135deg, #8a4a4a, #aa6666); border-radius:50%; width:28px; height:28px;"></div>
+          <div class="msg-content">
+            <div class="msg-name">Tom Riri</div>
+            <div class="msg-gift">sent <span class="gift-emoji">💎</span> x2</div>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-avatar" style="background: linear-gradient(135deg, #4a6a8a, #6a88aa); border-radius:50%; width:28px; height:28px;"></div>
+          <div class="msg-content">
+            <div class="msg-name">Sarah</div>
+            <div class="msg-gift">sent <span class="gift-emoji">💎</span> x1</div>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-avatar" style="background: linear-gradient(135deg, #4a8a5a, #6aaa6a); border-radius:50%; width:28px; height:28px;"></div>
+          <div class="msg-content">
+            <div class="msg-name">Swagtan6 <span class="verified">✓</span></div>
+            <div class="msg-text">@rowdywrecks knew for a fact it wasnt going to last LUL just too good to be true</div>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-avatar" style="background: linear-gradient(135deg, #8a6a4a, #aa8866); border-radius:50%; width:28px; height:28px;"></div>
+          <div class="msg-content">
+            <div class="msg-name">Mimikgao</div>
+            <div class="msg-text">こんにちはちはちはちはちは 事案。それはLULが長続きすることは</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-row">
+        <input class="chat-input" placeholder="Add comment..." type="text">
+        <button class="send-btn">😊</button>
+        <button class="send-btn">➤</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
