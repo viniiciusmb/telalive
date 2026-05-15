@@ -5,346 +5,685 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TikTok LIVE Studio</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a1a; color: #e0e0e0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; font-size: 13px; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #111; color: #e0e0e0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; font-size: 13px; }
 
-  /* Top bar */
-  .topbar { background: #111; display: flex; align-items: center; padding: 0 12px; height: 38px; border-bottom: 1px solid #2a2a2a; gap: 10px; }
-  .tiktok-logo { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; color: #fff; }
-  .tiktok-logo svg { width: 20px; height: 20px; }
-  .live-badge { background: #fe2c55; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
-  .stats-bar { display: flex; gap: 20px; margin-left: 12px; flex: 1; }
-  .stat { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #aaa; }
-  .stat span.val { color: #4caf8a; font-weight: 600; }
-  .stat span.val.white { color: #fff; }
-  .topbar-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
-  .icon-btn { width: 26px; height: 26px; border-radius: 50%; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #aaa; }
-  .icon-btn:hover { color: #fff; }
-  .avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #fe2c55, #ff6b6b); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; position: relative; }
-  .avatar .notif { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #fe2c55; border-radius: 50%; border: 1px solid #111; }
-  .win-btn { background: transparent; border: none; cursor: pointer; color: #888; font-size: 14px; padding: 2px 6px; }
-  .win-btn:hover { color: #fff; }
+/* POPUP */
+.popup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+.popup-box { background: #1e1e1e; border: 1px solid #333; border-radius: 14px; padding: 30px 36px; width: 420px; max-width: 95vw; }
+.popup-box h2 { color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.popup-box p { color: #888; font-size: 12px; margin-bottom: 24px; }
+.popup-field { margin-bottom: 16px; }
+.popup-field label { display: block; color: #aaa; font-size: 12px; margin-bottom: 6px; }
+.popup-field input { width: 100%; background: #2a2a2a; border: 1px solid #3a3a3a; border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; outline: none; }
+.popup-field input:focus { border-color: #fe2c55; }
+.popup-start { width: 100%; background: #fe2c55; border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 700; padding: 11px; cursor: pointer; margin-top: 8px; }
+.popup-start:hover { background: #e0203f; }
 
-  /* Main layout */
-  .main { display: flex; flex: 1; overflow: hidden; }
+/* TOP BAR */
+.topbar { background: #0d0d0d; display: flex; align-items: center; padding: 0 12px; height: 36px; border-bottom: 1px solid #222; gap: 10px; flex-shrink: 0; }
+.tiktok-logo { display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 14px; color: #fff; }
+.tiktok-logo svg { width: 18px; height: 18px; }
+.live-badge { background: #fe2c55; color: #fff; font-size: 9px; font-weight: 700; padding: 2px 5px; border-radius: 3px; letter-spacing: 0.3px; }
+.stats-bar { display: flex; gap: 18px; margin-left: 10px; }
+.stat { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #666; }
+.stat .val { color: #4ecb8d; font-weight: 600; }
+.stat .val.w { color: #ccc; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.tb-icon { color: #666; cursor: pointer; font-size: 15px; }
+.tb-icon:hover { color: #fff; }
+.avatar-btn { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg,#fe2c55,#ff7070); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: #fff; position: relative; cursor: pointer; }
+.avatar-btn .dot { position: absolute; top: -2px; right: -2px; width: 7px; height: 7px; background: #fe2c55; border-radius: 50%; border: 1.5px solid #0d0d0d; }
+.win-btns { display: flex; gap: 2px; }
+.win-btn { background: transparent; border: none; cursor: pointer; color: #555; font-size: 13px; padding: 2px 5px; }
+.win-btn:hover { color: #fff; }
 
-  /* Left panel - Scenes */
-  .left-panel { width: 220px; background: #1e1e1e; border-right: 1px solid #2a2a2a; display: flex; flex-direction: column; }
-  .panel-title { padding: 10px 14px; font-size: 13px; font-weight: 600; color: #fff; border-bottom: 1px solid #2a2a2a; }
-  .tabs { display: flex; border-bottom: 1px solid #2a2a2a; }
-  .tab { flex: 1; padding: 7px 0; text-align: center; font-size: 12px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; }
-  .tab.active { color: #fff; border-bottom: 2px solid #fe2c55; }
-  .scene-group { padding: 10px 14px; }
-  .scene-group-title { font-size: 11px; color: #666; margin-bottom: 8px; font-weight: 600; }
-  .scene-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; cursor: pointer; color: #ccc; margin-bottom: 2px; }
-  .scene-item:hover { background: #2a2a2a; }
-  .scene-item.active { background: #2a2a2a; color: #fff; }
-  .scene-icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; opacity: 0.7; }
-  .add-btn { display: flex; align-items: center; gap: 6px; color: #888; font-size: 12px; padding: 6px 10px; cursor: pointer; }
-  .add-btn:hover { color: #fe2c55; }
-  .scene-nav { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; border-top: 1px solid #2a2a2a; margin-top: auto; }
-  .scene-nav-item { padding: 8px 10px; border-radius: 6px; cursor: pointer; color: #aaa; }
-  .scene-nav-item:hover { background: #2a2a2a; color: #fff; }
-  .add-scene-btn { margin: 10px 14px; background: #2a2a2a; border: none; color: #ccc; padding: 8px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; width: calc(100% - 28px); }
-  .add-scene-btn:hover { background: #333; }
-  .tools-title { padding: 10px 14px; font-size: 13px; font-weight: 600; color: #fff; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a; }
-  .tools-icons { display: flex; gap: 4px; padding: 10px 14px; }
-  .tool-icon { width: 36px; height: 36px; background: #2a2a2a; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #aaa; font-size: 16px; }
-  .tool-icon:hover { background: #333; color: #fff; }
+/* MAIN */
+.main { display: flex; flex: 1; overflow: hidden; }
 
-  /* Center panel */
-  .center-panel { flex: 1; display: flex; flex-direction: column; background: #161616; }
-  .center-title { padding: 10px 14px; font-size: 13px; font-weight: 600; color: #fff; border-bottom: 1px solid #2a2a2a; }
-  .stream-view { flex: 1; display: flex; flex-direction: column; }
-  .stream-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #2a2a2a; }
-  .stream-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #4a4a8a, #6a4a8a); display: flex; align-items: center; justify-content: center; }
-  .stream-info { flex: 1; }
-  .stream-name { font-size: 15px; font-weight: 700; color: #fff; }
-  .stream-sub { font-size: 12px; color: #4caf8a; display: flex; align-items: center; gap: 4px; }
-  .stream-tags { display: flex; gap: 8px; margin-top: 6px; }
-  .tag { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #ccc; }
-  .edit-btn { background: transparent; border: none; color: #888; cursor: pointer; font-size: 16px; }
-  .stream-canvas { flex: 1; background: #0a0a0a; display: flex; align-items: center; justify-content: center; color: #333; }
-  .bottom-bar { border-top: 1px solid #2a2a2a; padding: 8px 14px; display: flex; flex-direction: column; gap: 8px; }
-  .controls-row { display: flex; align-items: center; gap: 10px; }
-  .ctrl-btn { background: transparent; border: none; color: #888; cursor: pointer; font-size: 14px; }
-  .slider { -webkit-appearance: none; height: 3px; border-radius: 2px; background: #444; outline: none; width: 100px; }
-  .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #fff; cursor: pointer; }
-  .live-dot { display: flex; align-items: center; gap: 6px; margin-left: auto; font-size: 12px; font-weight: 600; color: #fff; }
-  .red-dot { width: 8px; height: 8px; border-radius: 50%; background: #fe2c55; }
-  .rec-row { display: flex; align-items: center; gap: 10px; }
-  .rec-info { display: flex; align-items: center; gap: 6px; color: #888; font-size: 12px; }
-  .rec-dot { width: 8px; height: 8px; border-radius: 50%; background: #fe2c55; }
-  .rec-time { color: #ccc; }
-  .pause-btn { background: #2a2a2a; border: none; color: #ccc; padding: 7px 20px; border-radius: 6px; cursor: pointer; font-size: 12px; margin-left: auto; }
-  .pause-btn:hover { background: #333; }
-  .stop-btn { background: #fe2c55; border: none; color: #fff; padding: 7px 20px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+/* LEFT PANEL */
+.left-panel { width: 210px; background: #181818; border-right: 1px solid #222; display: flex; flex-direction: column; flex-shrink: 0; }
+.lp-header { padding: 8px 12px; font-size: 12px; font-weight: 600; color: #888; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; }
+.lp-header span { color: #fff; font-size: 13px; }
+.scenes-label { padding: 8px 12px 4px; font-size: 11px; color: #555; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+.scene-mode { margin: 6px 12px; background: #222; border: 1px solid #333; border-radius: 6px; padding: 6px 10px; font-size: 12px; color: #ccc; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+.scene-mode:hover { background: #2a2a2a; }
+.scene-block { padding: 4px 0; border-bottom: 1px solid #222; }
+.scene-block-title { padding: 6px 12px; font-size: 11px; color: #666; font-weight: 600; }
+.scene-item { display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; color: #aaa; font-size: 12px; }
+.scene-item:hover { background: #222; color: #fff; }
+.scene-item .si-icon { font-size: 13px; opacity: 0.7; }
+.add-source { display: flex; align-items: center; gap: 6px; padding: 6px 12px; color: #555; font-size: 12px; cursor: pointer; }
+.add-source:hover { color: #fe2c55; }
+.scene-navs { margin-top: 4px; }
+.snav { padding: 7px 12px; font-size: 12px; color: #666; cursor: pointer; }
+.snav:hover { color: #ccc; background: #222; }
+.lp-bottom { margin-top: auto; border-top: 1px solid #222; }
+.add-scene-btn { display: flex; align-items: center; gap: 6px; padding: 10px 12px; font-size: 12px; color: #aaa; cursor: pointer; }
+.add-scene-btn:hover { color: #fff; }
+.tools-bar { padding: 8px 12px; border-top: 1px solid #222; display: flex; gap: 6px; }
+.tool-btn { width: 34px; height: 34px; background: #222; border-radius: 7px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: #888; border: none; }
+.tool-btn:hover { background: #2a2a2a; color: #fff; }
 
-  /* Gifts row */
-  .gifts-row { display: flex; gap: 6px; padding: 8px 14px; background: #1a1a1a; border-top: 1px solid #2a2a2a; }
-  .gift { width: 52px; height: 52px; background: #2a2a2a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; position: relative; }
-  .gift .badge { position: absolute; top: -4px; right: -4px; background: #fe2c55; color: #fff; font-size: 9px; font-weight: 700; padding: 1px 4px; border-radius: 8px; }
-  .gift .timer { position: absolute; bottom: 2px; font-size: 9px; color: #fe2c55; font-weight: 700; }
-  .gift.more { color: #fe2c55; font-size: 12px; font-weight: 700; }
+/* CENTER */
+.center-panel { flex: 1; display: flex; flex-direction: column; background: #141414; min-width: 0; }
+.cp-header { padding: 7px 14px; font-size: 12px; font-weight: 600; color: #aaa; border-bottom: 1px solid #222; display: flex; align-items: center; gap: 10px; }
+.cp-header .topic-tag { background: #2a2a2a; border-radius: 4px; padding: 2px 8px; font-size: 11px; color: #ccc; }
+.cp-header .top100 { background: #2a1a00; color: #ffaa00; border-radius: 4px; padding: 2px 8px; font-size: 11px; }
+.cp-header-icons { margin-left: auto; display: flex; gap: 8px; color: #555; }
+.cp-body { flex: 1; display: flex; overflow: hidden; }
 
-  /* Right panel */
-  .right-panel { width: 300px; background: #1e1e1e; border-left: 1px solid #2a2a2a; display: flex; flex-direction: column; }
-  .right-top { padding: 10px 14px; border-bottom: 1px solid #2a2a2a; }
-  .live-data-title { display: flex; align-items: center; justify-content: space-between; }
-  .live-data-title span { font-size: 14px; font-weight: 700; color: #fff; }
-  .home-icon { color: #888; cursor: pointer; }
-  .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
-  .data-cell { }
-  .data-label { font-size: 11px; color: #888; margin-bottom: 4px; }
-  .data-val { font-size: 22px; font-weight: 700; color: #fff; }
-  .chat-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .chat-header { display: flex; align-items: center; padding: 8px 14px; border-bottom: 1px solid #2a2a2a; gap: 8px; }
-  .chat-title { flex: 1; text-align: center; font-size: 13px; font-weight: 600; color: #fff; }
-  .chat-icon { color: #888; cursor: pointer; }
-  .chat-messages { flex: 1; overflow-y: auto; padding: 8px 12px; display: flex; flex-direction: column; gap: 8px; }
-  .chat-messages::-webkit-scrollbar { width: 4px; }
-  .chat-messages::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
-  .msg { display: flex; align-items: flex-start; gap: 8px; }
-  .msg-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; }
-  .msg-content { flex: 1; }
-  .msg-name { font-size: 11px; font-weight: 600; color: #fe2c55; margin-bottom: 2px; display: flex; align-items: center; gap: 4px; }
-  .verified { width: 12px; height: 12px; background: #4a9eff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 8px; color: #fff; }
-  .msg-text { font-size: 12px; color: #ccc; line-height: 1.4; }
-  .msg-gift { font-size: 12px; color: #888; display: flex; align-items: center; gap: 4px; }
-  .gift-emoji { font-size: 18px; }
-  .chat-input-row { padding: 8px 12px; border-top: 1px solid #2a2a2a; display: flex; gap: 8px; align-items: center; }
-  .chat-input { flex: 1; background: #2a2a2a; border: none; border-radius: 20px; padding: 7px 12px; color: #ccc; font-size: 12px; outline: none; }
-  .chat-input::placeholder { color: #555; }
-  .send-btn { background: transparent; border: none; color: #888; cursor: pointer; font-size: 18px; }
+/* PHONE PREVIEW */
+.phone-wrap { display: flex; align-items: center; justify-content: center; padding: 12px; background: #111; border-right: 1px solid #222; width: 230px; flex-shrink: 0; }
+.phone { width: 170px; height: 300px; background: #000; border-radius: 28px; border: 3px solid #333; overflow: hidden; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+.phone-screen { width: 100%; height: 100%; background: linear-gradient(180deg, #1a0a1a 0%, #0d0820 50%, #000 100%); position: relative; overflow: hidden; }
+.phone-video-bg { position: absolute; inset: 0; background: linear-gradient(160deg, #1a1040 0%, #2d1060 30%, #1a0830 60%, #000 100%); }
+.phone-streamer { position: absolute; bottom: 0; left: 0; right: 0; height: 70%; background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 40px; }
+.phone-person { width: 90px; height: 130px; background: linear-gradient(180deg, #3a2a4a 0%, #2a1a3a 100%); border-radius: 12px 12px 0 0; position: relative; overflow: hidden; }
+.phone-person::before { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 30px; height: 30px; background: #5a3a6a; border-radius: 50%; }
+.phone-person::after { content: '🎧'; position: absolute; top: 2px; left: 50%; transform: translateX(-50%); font-size: 22px; }
+.phone-mic { position: absolute; top: 20%; right: 15%; font-size: 22px; opacity: 0.8; }
+.phone-overlay-top { position: absolute; top: 0; left: 0; right: 0; padding: 8px 8px 0; display: flex; align-items: flex-start; justify-content: space-between; }
+.phone-avatar-row { display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.5); border-radius: 20px; padding: 3px 6px; }
+.phone-av { width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg,#fe2c55,#ff7070); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: #fff; }
+.phone-name { font-size: 9px; color: #fff; font-weight: 600; }
+.phone-live-tag { background: #fe2c55; border-radius: 4px; padding: 2px 5px; font-size: 8px; font-weight: 700; color: #fff; }
+.phone-viewers { font-size: 8px; color: rgba(255,255,255,0.7); }
+.phone-comments { position: absolute; bottom: 45px; left: 0; right: 30px; padding: 0 8px; display: flex; flex-direction: column; gap: 3px; overflow: hidden; max-height: 80px; }
+.phone-comment { background: rgba(0,0,0,0.5); border-radius: 10px; padding: 3px 7px; display: flex; align-items: center; gap: 4px; backdrop-filter: blur(4px); }
+.pc-name { font-size: 8px; font-weight: 700; color: #fe2c55; }
+.pc-text { font-size: 8px; color: #fff; }
+.phone-actions { position: absolute; right: 6px; bottom: 50px; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.ph-act { font-size: 18px; }
+.phone-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 38px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: space-around; padding: 0 8px; }
+.phone-gift-row { display: flex; gap: 4px; align-items: center; }
+.ph-gift { font-size: 14px; }
+.phone-gift-count { font-size: 9px; color: #ffaa00; font-weight: 700; }
+.phone-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 50px; height: 8px; background: #333; border-radius: 0 0 8px 8px; z-index: 10; }
+
+/* STREAM AREA */
+.stream-area { flex: 1; display: flex; flex-direction: column; }
+.stream-canvas { flex: 1; background: #0a0a0a; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.stream-canvas-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #0d0820 0%, #1a0830 50%, #0a0010 100%); }
+.stream-empty { position: relative; z-index: 1; text-align: center; color: #333; }
+.stream-empty .icon { font-size: 40px; margin-bottom: 8px; }
+.stream-empty p { font-size: 12px; }
+.gift-notifs { position: absolute; bottom: 60px; left: 10px; z-index: 10; display: flex; flex-direction: column; gap: 4px; pointer-events: none; }
+.gift-notif { background: linear-gradient(90deg, rgba(254,44,85,0.9), rgba(255,100,100,0.7)); border-radius: 20px; padding: 5px 12px 5px 5px; display: flex; align-items: center; gap: 6px; animation: slideIn 0.3s ease; font-size: 11px; color: #fff; font-weight: 600; max-width: 200px; }
+.gift-notif .gn-av { width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; }
+@keyframes slideIn { from { opacity:0; transform: translateX(-20px); } to { opacity:1; transform:translateX(0); } }
+@keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+
+.gifts-tray { padding: 6px 12px; background: #181818; border-top: 1px solid #222; display: flex; gap: 6px; align-items: center; }
+.gtray-gift { width: 48px; height: 48px; background: #222; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; font-size: 20px; }
+.gtray-gift .gbadge { position: absolute; top: -4px; right: -4px; background: #fe2c55; color: #fff; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 8px; }
+.gtray-gift .gtimer { font-size: 8px; color: #ffaa00; font-weight: 700; margin-top: 1px; }
+.more-tag { font-size: 10px; color: #fe2c55; font-weight: 700; padding: 0 4px; }
+
+.bottom-controls { border-top: 1px solid #222; padding: 7px 12px; display: flex; flex-direction: column; gap: 6px; background: #181818; }
+.ctrl-row { display: flex; align-items: center; gap: 8px; }
+.ctrl-icon { background: none; border: none; color: #666; cursor: pointer; font-size: 14px; padding: 2px; }
+.ctrl-icon:hover { color: #fff; }
+.vol-slider { -webkit-appearance: none; height: 3px; background: #4ecb8d; border-radius: 2px; outline: none; width: 80px; cursor: pointer; }
+.vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 11px; height: 11px; border-radius: 50%; background: #fff; cursor: pointer; }
+.mic-slider { -webkit-appearance: none; height: 3px; background: #4ecb8d; border-radius: 2px; outline: none; width: 80px; cursor: pointer; }
+.mic-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 11px; height: 11px; border-radius: 50%; background: #fff; cursor: pointer; }
+.live-indicator { margin-left: auto; display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: #fff; }
+.live-red { width: 7px; height: 7px; border-radius: 50%; background: #fe2c55; animation: blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.rec-row2 { display: flex; align-items: center; gap: 8px; }
+.rec-time-display { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #888; }
+.rec-dot2 { width: 6px; height: 6px; border-radius: 50%; background: #fe2c55; }
+.res-label { margin-left: 6px; font-size: 10px; color: #555; }
+.pause-btn { margin-left: auto; background: #2a2a2a; border: none; color: #ccc; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 11px; }
+.pause-btn:hover { background: #333; }
+.stop-btn { background: #fe2c55; border: none; color: #fff; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+
+/* RIGHT PANEL */
+.right-panel { width: 290px; background: #181818; border-left: 1px solid #222; display: flex; flex-direction: column; flex-shrink: 0; }
+.rp-data { padding: 10px 12px; border-bottom: 1px solid #222; }
+.rp-data-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.rp-data-header span { font-size: 13px; font-weight: 700; color: #fff; }
+.rp-data-header .home { color: #666; cursor: pointer; }
+.data-stats-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+.ds { display: flex; align-items: center; gap: 4px; font-size: 11px; }
+.ds-icon { font-size: 14px; }
+.ds-val { font-weight: 700; color: #fff; font-size: 13px; }
+.ds-sub { color: #666; font-size: 10px; }
+.top-gifters { display: flex; flex-direction: column; gap: 4px; }
+.tg-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+.tg-rank { font-size: 11px; color: #666; width: 12px; }
+.tg-av { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.tg-name { flex: 1; font-size: 11px; color: #ccc; }
+.tg-badge { background: #2a2a2a; border-radius: 4px; padding: 1px 5px; font-size: 9px; color: #aaa; }
+.tg-val { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 3px; }
+.tg-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+/* CHAT */
+.chat-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.chat-head { display: flex; align-items: center; padding: 8px 12px; border-bottom: 1px solid #222; gap: 6px; }
+.chat-head-title { flex: 1; text-align: center; font-size: 12px; font-weight: 700; color: #fff; }
+.chat-head-icon { color: #555; cursor: pointer; font-size: 14px; }
+.chat-msgs { flex: 1; overflow-y: auto; padding: 6px 10px; display: flex; flex-direction: column; gap: 6px; }
+.chat-msgs::-webkit-scrollbar { width: 3px; }
+.chat-msgs::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+.cm { display: flex; align-items: flex-start; gap: 7px; }
+.cm-av { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; }
+.cm-body { flex: 1; min-width: 0; }
+.cm-top { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-bottom: 2px; }
+.cm-name { font-size: 11px; font-weight: 700; color: #fff; }
+.cm-badge { font-size: 8px; padding: 1px 4px; border-radius: 3px; font-weight: 700; }
+.cm-badge.afke { background: #2a1a00; color: #ffaa00; }
+.cm-badge.n1 { background: #1a0a00; color: #ff6600; }
+.cm-badge.n2 { background: #0a1a00; color: #88cc00; }
+.cm-rank { font-size: 9px; color: #666; }
+.cm-text { font-size: 11px; color: #bbb; line-height: 1.4; word-break: break-word; }
+.cm-gift-line { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #ccc; background: rgba(255,170,0,0.08); border-radius: 6px; padding: 3px 7px; }
+.cm-gift-emoji { font-size: 16px; }
+.cm-gift-count { font-weight: 700; color: #ffaa00; }
+.gift-banner { display: flex; align-items: center; gap: 6px; background: linear-gradient(90deg, rgba(254,44,85,0.15), rgba(254,44,85,0.05)); border-left: 2px solid #fe2c55; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #fe2c55; font-weight: 600; }
+.chat-input-area { padding: 7px 10px; border-top: 1px solid #222; display: flex; gap: 6px; align-items: center; }
+.chat-inp { flex: 1; background: #222; border: 1px solid #2a2a2a; border-radius: 18px; padding: 6px 12px; color: #ccc; font-size: 11px; outline: none; }
+.chat-inp:focus { border-color: #444; }
+.chat-inp::placeholder { color: #444; }
+.chat-send { background: none; border: none; color: #555; cursor: pointer; font-size: 16px; }
+.chat-emoji { background: none; border: none; color: #555; cursor: pointer; font-size: 16px; }
+
+/* NEW FOLLOWER TOAST */
+.follower-toast { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, #1a0830, #2a1050); border: 1px solid #fe2c55; border-radius: 20px; padding: 6px 14px; display: flex; align-items: center; gap: 8px; z-index: 1000; font-size: 11px; color: #fff; animation: toastAnim 0.3s ease; pointer-events: none; }
+.follower-toast .ft-av { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg,#fe2c55,#ff7070); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
+@keyframes toastAnim { from{opacity:0;transform:translateX(-50%) translateY(10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
 </style>
 </head>
 <body>
 
-<!-- Top bar -->
+<!-- POPUP -->
+<div class="popup-overlay" id="popup">
+  <div class="popup-box">
+    <h2>🎬 Configurar LIVE</h2>
+    <p>Defina os valores iniciais da sua transmissão</p>
+    <div class="popup-field">
+      <label>💎 Diamantes iniciais</label>
+      <input type="number" id="p-diamonds" value="4345" min="0">
+    </div>
+    <div class="popup-field">
+      <label>👁️ Visualizações iniciais</label>
+      <input type="number" id="p-viewers" value="8300000" min="0">
+    </div>
+    <div class="popup-field">
+      <label>🎁 Pessoas que deram presente</label>
+      <input type="number" id="p-gifters" value="629" min="0">
+    </div>
+    <div class="popup-field">
+      <label>➕ Novos seguidores iniciais</label>
+      <input type="number" id="p-followers" value="452000" min="0">
+    </div>
+    <div class="popup-field">
+      <label>⏱️ Tempo de live (minutos)</label>
+      <input type="number" id="p-time" value="34" min="0">
+    </div>
+    <button class="popup-start" onclick="startLive()">🚀 Iniciar LIVE</button>
+  </div>
+</div>
+
+<!-- TOP BAR -->
 <div class="topbar">
   <div class="tiktok-logo">
     <svg viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.94a8.18 8.18 0 0 0 4.78 1.52V7.01a4.85 4.85 0 0 1-1.01-.32z"/></svg>
-    TikTok
-    <span class="live-badge">LIVE Studio</span>
+    TikTok <span class="live-badge">LIVE Studio</span>
   </div>
   <div class="stats-bar">
     <div class="stat">CPU <span class="val">8%</span></div>
     <div class="stat">Memory <span class="val">0.6 GB</span></div>
-    <div class="stat">Kbps upload <span class="val white">872kb/s</span></div>
-    <div class="stat">Frame Drops <span class="val white">30</span></div>
-    <div class="stat">Encoder Fps <span class="val white">30</span></div>
+    <div class="stat">Kbps upload <span class="val w">872kb/s</span></div>
+    <div class="stat">Frame Drops <span class="val w">0</span></div>
+    <div class="stat">Encoder Fps <span class="val w">30</span></div>
   </div>
   <div class="topbar-right">
-    <button class="icon-btn">?</button>
-    <div class="avatar">T<span class="notif"></span></div>
-    <button class="win-btn">—</button>
-    <button class="win-btn">⬜</button>
-    <button class="win-btn">✕</button>
+    <span class="tb-icon">🔔</span>
+    <span class="tb-icon">❓</span>
+    <div class="avatar-btn">V<span class="dot"></span></div>
+    <div class="win-btns">
+      <button class="win-btn">—</button>
+      <button class="win-btn">⬜</button>
+      <button class="win-btn">✕</button>
+    </div>
   </div>
 </div>
 
-<!-- Main -->
+<!-- MAIN -->
 <div class="main">
 
-  <!-- Left Panel -->
+  <!-- LEFT PANEL -->
   <div class="left-panel">
-    <div class="panel-title">Scenes</div>
-    <div class="tabs">
-      <div class="tab active">🖼 Landscape</div>
-      <div class="tab">📱 Portrait</div>
+    <div class="lp-header"><span>LIVE tools</span> <span style="color:#555;font-size:16px;">∨</span></div>
+    <div class="scenes-label">Scenes</div>
+    <div class="scene-mode">📱 Portrait mode <span>▾</span></div>
+    <div class="scene-block">
+      <div class="scene-block-title">Scene 1</div>
+      <div class="add-source">+ Add source (4/20)</div>
+      <div class="scene-item"><span class="si-icon">🔔</span> Alert</div>
+      <div class="scene-item"><span class="si-icon">🎯</span> Goal</div>
+      <div class="scene-item"><span class="si-icon">🖥</span> Display capture</div>
+      <div class="scene-item"><span class="si-icon">📷</span> Camera</div>
     </div>
-    <div class="scene-group">
-      <div class="scene-group-title">Full screen game</div>
-      <div class="scene-item active">
-        <span class="scene-icon">🖥</span> Dell Display2
-      </div>
-      <div class="scene-item">
-        <span class="scene-icon">🔔</span> Subscribe alert
-      </div>
-      <div class="scene-item">
-        <span class="scene-icon">🎯</span> Follower goal
-      </div>
-      <div class="scene-item">
-        <span class="scene-icon">💬</span> Chatbox
-      </div>
-      <div class="scene-item">
-        <span class="scene-icon">📷</span> Camera
-      </div>
-      <div class="add-btn">+ Add new (5/10)</div>
+    <div class="scene-navs">
+      <div class="snav">Scene 2</div>
+      <div class="snav">Scene 3</div>
     </div>
-    <div style="padding: 0 14px; border-top: 1px solid #2a2a2a; margin-top: 6px;">
-      <div class="scene-nav-item">personal broadcast screen</div>
-      <div class="scene-nav-item">Talk screen</div>
-    </div>
-    <div style="margin-top: auto;">
-      <div style="padding: 10px 14px;">
-        <button class="add-scene-btn">+ Add scene</button>
-      </div>
-      <div class="tools-title">Tools</div>
-      <div class="tools-icons">
-        <div class="tool-icon">✨</div>
-        <div class="tool-icon">🎬</div>
-        <div class="tool-icon">📊</div>
-        <div class="tool-icon">🎮</div>
+    <div class="lp-bottom">
+      <div class="add-scene-btn">➕ Add scene (3/30) <span style="margin-left:auto;font-size:11px;color:#555;">⚙</span></div>
+      <div class="tools-bar">
+        <button class="tool-btn">✨</button>
+        <button class="tool-btn">✂️</button>
+        <button class="tool-btn">📊</button>
+        <button class="tool-btn">🎮</button>
       </div>
     </div>
   </div>
 
-  <!-- Center Panel -->
+  <!-- CENTER -->
   <div class="center-panel">
-    <div class="center-title">Streaming View</div>
-    <div class="stream-view">
-      <div class="stream-header">
-        <div class="stream-avatar">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.94a8.18 8.18 0 0 0 4.78 1.52V7.01a4.85 4.85 0 0 1-1.01-.32z"/></svg>
-        </div>
-        <div class="stream-info">
-          <div class="stream-name">TikTok LIVE Studio</div>
-          <div class="stream-sub">✅ Let's get started</div>
-          <div class="stream-tags">
-            <div class="tag">👥 452k</div>
-            <div class="tag">🎮 Gaming</div>
-            <div class="tag">⭐ Weekly top 100</div>
+    <div class="cp-header">
+      <span class="topic-tag">🟡 Topic</span>
+      <span class="top100">⭐ Weekly top 100</span>
+      <div class="cp-header-icons">
+        <span>⚙</span><span>✨</span><span>⊞</span><span>✕</span><span>⊡</span><span>↗</span>
+      </div>
+    </div>
+    <div class="cp-body">
+      <!-- PHONE -->
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-video-bg"></div>
+            <div class="phone-streamer">
+              <div class="phone-person"></div>
+            </div>
+            <div class="phone-mic">🎙</div>
+            <div class="phone-overlay-top">
+              <div class="phone-avatar-row">
+                <div class="phone-av">V</div>
+                <div>
+                  <div class="phone-name">viniciusmb</div>
+                  <div class="phone-viewers" id="ph-viewers">8.3M views</div>
+                </div>
+              </div>
+              <div><div class="phone-live-tag">LIVE</div></div>
+            </div>
+            <div class="phone-comments" id="phone-comments">
+              <div class="phone-comment"><span class="pc-name">brasil🇧🇷</span><span class="pc-text">força!!</span></div>
+              <div class="phone-comment"><span class="pc-name">Swagtan6</span><span class="pc-text">🌹 x36</span></div>
+              <div class="phone-comment"><span class="pc-name">hllhulo</span><span class="pc-text">🥞 x4</span></div>
+            </div>
+            <div class="phone-actions">
+              <div class="ph-act">❤️</div>
+              <div class="ph-act">💬</div>
+              <div class="ph-act">➕</div>
+              <div class="ph-act">↗️</div>
+            </div>
+            <div class="phone-bar">
+              <div class="phone-gift-row">
+                <span class="ph-gift">🌹</span><span class="ph-gift">🎂</span><span class="ph-gift">🌌</span>
+              </div>
+              <span class="phone-gift-count" id="ph-gift-count">+899</span>
+            </div>
           </div>
         </div>
-        <button class="edit-btn">✏️</button>
       </div>
 
-      <div class="stream-canvas">
-        <!-- Empty stream canvas -->
-      </div>
-
-      <div class="gifts-row">
-        <div class="gift">🎮</div>
-        <div class="gift">🎁<span class="badge">12</span><span class="timer">14:59</span></div>
-        <div class="gift">🎯<span class="timer">+899</span></div>
-      </div>
-
-      <div class="bottom-bar">
-        <div class="controls-row">
-          <button class="ctrl-btn">⚙️</button>
-          <button class="ctrl-btn">🔊</button>
-          <input type="range" class="slider" value="60">
-          <button class="ctrl-btn">🎙</button>
-          <input type="range" class="slider" value="70">
-          <div class="live-dot" style="margin-left: auto;">
-            <span class="red-dot"></span> LIVE
+      <!-- STREAM AREA -->
+      <div class="stream-area">
+        <div class="stream-canvas">
+          <div class="stream-canvas-bg"></div>
+          <div class="stream-empty">
+            <div class="icon">🎬</div>
+            <p>Streaming View</p>
           </div>
+          <div class="gift-notifs" id="gift-notifs"></div>
         </div>
-        <div class="rec-row">
-          <div class="rec-info">
-            <span class="rec-dot"></span>
-            <span class="rec-time">13:23:24</span>
+
+        <div class="gifts-tray">
+          <div class="gtray-gift">🎮</div>
+          <div class="gtray-gift">🌹<span class="gbadge">12</span><span class="gtimer">14:59</span></div>
+          <div class="gtray-gift">🌌<span class="gtimer" id="gift-plus">+899</span></div>
+          <div class="more-tag">+899</div>
+        </div>
+
+        <div class="bottom-controls">
+          <div class="ctrl-row">
+            <button class="ctrl-icon">⚙</button>
+            <button class="ctrl-icon">✏</button>
+            <button class="ctrl-icon">≡</button>
+            <button class="ctrl-icon">🔊</button>
+            <input type="range" class="vol-slider" value="70">
+            <button class="ctrl-icon">🎙</button>
+            <input type="range" class="mic-slider" value="65">
+            <div class="live-indicator">
+              <span class="live-red"></span> LIVE
+            </div>
+            <button class="stop-btn" id="stop-timer">00:34:55</button>
           </div>
-          <button class="pause-btn">Pause stream</button>
-          <button class="stop-btn">00:34:55</button>
+          <div class="rec-row2">
+            <div class="rec-time-display">
+              <span class="rec-dot2"></span>
+              <span id="rec-clock">13:23:24</span>
+            </div>
+            <span class="res-label">1920 × 1080</span>
+            <button class="pause-btn">Pause stream</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Right Panel -->
+  <!-- RIGHT PANEL -->
   <div class="right-panel">
-    <div class="right-top">
-      <div class="live-data-title">
-        <span>LIVE Data</span>
-        <span class="home-icon">🏠</span>
+    <div class="rp-data">
+      <div class="rp-data-header">
+        <span>LIVE data</span>
+        <span class="home">🏠</span>
       </div>
-      <div class="data-grid">
-        <div class="data-cell">
-          <div class="data-label">Diamonds</div>
-          <div class="data-val">4,345</div>
+      <div class="data-stats-row">
+        <div class="ds"><span class="ds-icon">💎</span><div><div class="ds-val" id="diamonds-val">4,285</div></div></div>
+        <div class="ds"><span class="ds-icon">👥</span><div><div class="ds-val" id="viewers-val">5,169</div></div></div>
+        <div class="ds"><span class="ds-icon">👤</span><div><div class="ds-val" id="followers-val">3,826</div></div></div>
+        <div class="ds"><span class="ds-icon">❤️</span><div><div class="ds-val" id="likes-val">8.3M</div></div></div>
+      </div>
+      <div class="top-gifters">
+        <div class="tg-item">
+          <span class="tg-rank">1</span>
+          <div class="tg-av" style="background:linear-gradient(135deg,#ff6b35,#f7931e)">S6</div>
+          <span class="tg-name">Swagtan6</span>
+          <span class="tg-badge afke">AFKE</span>
+          <span class="tg-val"><span class="tg-dot" style="background:#ffaa00"></span> <span id="tg1-val">444.4K</span></span>
         </div>
-        <div class="data-cell">
-          <div class="data-label">Total viewers</div>
-          <div class="data-val">8.3M</div>
+        <div class="tg-item">
+          <span class="tg-rank">2</span>
+          <div class="tg-av" style="background:linear-gradient(135deg,#4a9eff,#6a5acd)">H</div>
+          <span class="tg-name">hllhulo</span>
+          <span class="tg-badge afke">AFKE</span>
+          <span class="tg-val"><span class="tg-dot" style="background:#ffaa00"></span> 403K</span>
         </div>
-        <div class="data-cell">
-          <div class="data-label">Gifters</div>
-          <div class="data-val">629</div>
-        </div>
-        <div class="data-cell">
-          <div class="data-label">Gifters</div>
-          <div class="data-val">629</div>
+        <div class="tg-item">
+          <span class="tg-rank">3</span>
+          <div class="tg-av" style="background:linear-gradient(135deg,#4ecb8d,#2ecc71)">M</div>
+          <span class="tg-name">Mimikgao</span>
+          <span class="tg-badge afke">AFKE</span>
+          <span class="tg-val"><span class="tg-dot" style="background:#aaa"></span> 383K</span>
         </div>
       </div>
     </div>
 
     <div class="chat-section">
-      <div class="chat-header">
-        <span class="chat-icon">👥</span>
-        <span class="chat-title">LIVE chat</span>
-        <span class="chat-icon">⚙️</span>
-        <span class="chat-icon">📋</span>
+      <div class="chat-head">
+        <span class="chat-head-icon">👥</span>
+        <span class="chat-head-title">LIVE chat</span>
+        <span class="chat-head-icon">⚙</span>
+        <span class="chat-head-icon">⊡</span>
       </div>
 
-      <div class="chat-messages">
-        <div class="msg">
-          <div class="msg-avatar" style="background: linear-gradient(135deg, #8a4a4a, #aa6666); border-radius:50%; width:28px; height:28px;"></div>
-          <div class="msg-content">
-            <div class="msg-name">Tom Riri</div>
-            <div class="msg-text">god geez how the hack u did that move right? dont know how you did it</div>
-          </div>
-        </div>
-
-        <div class="msg">
-          <div class="msg-avatar" style="background: linear-gradient(135deg, #4a6a8a, #6a88aa); border-radius:50%; width:28px; height:28px;"></div>
-          <div class="msg-content">
-            <div class="msg-name">Sarah <span class="verified">✓</span></div>
-            <div class="msg-text">@rowdywrecks knew for a fact it wasnt going to last LUL just too good to be true</div>
-          </div>
-        </div>
-
-        <div class="msg">
-          <div class="msg-avatar" style="background: linear-gradient(135deg, #4a8a5a, #6aaa6a); border-radius:50%; width:28px; height:28px;"></div>
-          <div class="msg-content">
-            <div class="msg-name">Swagtan6</div>
-            <div class="msg-gift">sent <span class="gift-emoji">💎</span> x6</div>
-          </div>
-        </div>
-
-        <div class="msg">
-          <div class="msg-avatar" style="background: linear-gradient(135deg, #8a4a4a, #aa6666); border-radius:50%; width:28px; height:28px;"></div>
-          <div class="msg-content">
-            <div class="msg-name">Tom Riri</div>
-            <div class="msg-gift">sent <span class="gift-emoji">💎</span> x2</div>
-          </div>
-        </div>
-
-        <div class="msg">
-          <div class="msg-avatar" style="background: linear-gradient(135deg, #4a6a8a, #6a88aa); border-radius:50%; width:28px; height:28px;"></div>
-          <div class="msg-content">
-            <div class="msg-name">Sarah</div>
-            <div class="msg-gift">sent <span class="gift-emoji">💎</span> x1</div>
-          </div>
-        </div>
-
-        <div class="msg">
-          <div class="msg-avatar" style="background: linear-gradient(135deg, #4a8a5a, #6aaa6a); border-radius:50%; width:28px; height:28px;"></div>
-          <div class="msg-content">
-            <div class="msg-name">Swagtan6 <span class="verified">✓</span></div>
-            <div class="msg-text">@rowdywrecks knew for a fact it wasnt going to last LUL just too good to be true</div>
-          </div>
-        </div>
-
-        <div class="msg">
-          <div class="msg-avatar" style="background: linear-gradient(135deg, #8a6a4a, #aa8866); border-radius:50%; width:28px; height:28px;"></div>
-          <div class="msg-content">
-            <div class="msg-name">Mimikgao</div>
-            <div class="msg-text">こんにちはちはちはちはちは 事案。それはLULが長続きすることは</div>
-          </div>
-        </div>
+      <!-- Gift banners -->
+      <div style="padding:4px 10px; display:flex; flex-direction:column; gap:3px;" id="gift-banners">
+        <div class="gift-banner">Swagtan6 sent Rose 🌹 ×36</div>
+        <div class="gift-banner">hllhulo sent Pancakes 🥞 ×4</div>
+        <div class="gift-banner">Mimikgao sent Universe 🌌 ×2</div>
       </div>
 
-      <div class="chat-input-row">
-        <input class="chat-input" placeholder="Add comment..." type="text">
-        <button class="send-btn">😊</button>
-        <button class="send-btn">➤</button>
+      <div class="chat-msgs" id="chat-msgs">
+        <!-- populated by JS -->
+      </div>
+
+      <div class="chat-input-area">
+        <input class="chat-inp" placeholder="Add comment..." type="text" id="chat-input" onkeydown="sendChat(event)">
+        <button class="chat-emoji">😊</button>
+        <button class="chat-send">➤</button>
       </div>
     </div>
   </div>
 
 </div>
 
+<!-- FOLLOWER TOAST -->
+<div class="follower-toast" id="follower-toast" style="display:none">
+  <div class="ft-av" id="ft-av">U</div>
+  <span id="ft-text">alguém começou a te seguir</span>
+</div>
+
+<script>
+// STATE
+let diamonds = 4285, viewers = 5169, followers = 3826, likes = 8300000, gifters = 629;
+let liveSeconds = 34 * 60 + 55;
+let clockH = 13, clockM = 23, clockS = 24;
+
+function startLive() {
+  diamonds = parseInt(document.getElementById('p-diamonds').value) || 4285;
+  viewers = parseInt(document.getElementById('p-viewers').value) || 5169;
+  gifters = parseInt(document.getElementById('p-gifters').value) || 629;
+  followers = parseInt(document.getElementById('p-followers').value) || 3826;
+  const mins = parseInt(document.getElementById('p-time').value) || 34;
+  liveSeconds = mins * 60 + 55;
+  likes = viewers;
+  document.getElementById('popup').style.display = 'none';
+  updateStats();
+}
+
+function fmtNum(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+  return n.toLocaleString();
+}
+
+function fmtTime(s) {
+  const h = Math.floor(s/3600).toString().padStart(2,'0');
+  const m = Math.floor((s%3600)/60).toString().padStart(2,'0');
+  const sc = (s%60).toString().padStart(2,'0');
+  return `${h}:${m}:${sc}`;
+}
+
+function updateStats() {
+  document.getElementById('diamonds-val').textContent = fmtNum(diamonds);
+  document.getElementById('viewers-val').textContent = fmtNum(viewers);
+  document.getElementById('followers-val').textContent = fmtNum(followers);
+  document.getElementById('likes-val').textContent = fmtNum(likes);
+  document.getElementById('ph-viewers').textContent = fmtNum(viewers) + ' views';
+  document.getElementById('stop-timer').textContent = fmtTime(liveSeconds);
+}
+
+// CLOCK
+setInterval(() => {
+  clockS++;
+  if(clockS>=60){clockS=0;clockM++;}
+  if(clockM>=60){clockM=0;clockH++;}
+  if(clockH>=24) clockH=0;
+  document.getElementById('rec-clock').textContent =
+    `${String(clockH).padStart(2,'0')}:${String(clockM).padStart(2,'0')}:${String(clockS).padStart(2,'0')}`;
+}, 1000);
+
+// LIVE TIMER
+setInterval(() => {
+  liveSeconds++;
+  document.getElementById('stop-timer').textContent = fmtTime(liveSeconds);
+}, 1000);
+
+// INCREMENT STATS
+setInterval(() => {
+  diamonds += Math.floor(Math.random() * 30) + 5;
+  viewers += Math.floor(Math.random() * 200) - 30;
+  if(viewers < 100) viewers = 100;
+  likes += Math.floor(Math.random() * 500) + 50;
+  if(Math.random() < 0.3) { gifters += Math.floor(Math.random() * 3) + 1; }
+  if(Math.random() < 0.2) { followers += Math.floor(Math.random() * 5) + 1; }
+  updateStats();
+}, 2000);
+
+// CHAT MESSAGES POOL
+const chatPool = [
+  { name: 'BBalli', color: '#ff6b35', badge: 'AFKE', rank: '🏅13', text: 'La façon de voyager est trop bonne pour en profiter', flag: '🇫🇷' },
+  { name: 'Robertsson', color: '#4a9eff', badge: null, rank: '🏅34', text: 'Have a travel way too nice to enjoy', flag: '🇸🇪' },
+  { name: 'Tom Riri', color: '#fe2c55', badge: 'N.2', rank: '🏅11', text: 'god geez how the hack u did that move right? dont know how you did it', flag: '🇺🇸' },
+  { name: 'Ramos', color: '#4ecb8d', badge: 'AFKE', rank: '🏅13', text: 'Wow, das ist cool, wie geht das?', flag: '🇩🇪' },
+  { name: 'Sarah', color: '#9b59b6', badge: 'AFKE', rank: null, text: '@rowdywrecks knew for a fact it wasnt going to last LUL just too good to be true', flag: '🇬🇧' },
+  { name: 'brasil_fã', color: '#4ecb8d', badge: null, rank: null, text: '🇧🇷🇧🇷🇧🇷 VAI BRASIL caralhooo', flag: '🇧🇷' },
+  { name: 'lucas_br', color: '#ffaa00', badge: null, rank: null, text: 'cara q live dahora mano to viciado aqui 🔥', flag: '🇧🇷' },
+  { name: 'argentinaNo1', color: '#74b9ff', badge: null, rank: null, text: '🇦🇷 Argentina siempre!! vamos vamos!!', flag: '🇦🇷' },
+  { name: 'kpop_lover99', color: '#fd79a8', badge: null, rank: null, text: '🇰🇷 파이팅!!!! love from Korea', flag: '🇰🇷' },
+  { name: 'mexicano_fan', color: '#55efc4', badge: null, rank: null, text: '🇲🇽 Mexico aqui presente!! arriba!!', flag: '🇲🇽' },
+  { name: 'usa_gang', color: '#74b9ff', badge: 'N.1', rank: '🏅8', text: '🇺🇸 USA USA USA lets gooo bro', flag: '🇺🇸' },
+  { name: 'japonês_kun', color: '#fdcb6e', badge: null, rank: null, text: '🇯🇵 すごい！本当に上手ですね！', flag: '🇯🇵' },
+  { name: 'france_vip', color: '#a29bfe', badge: 'AFKE', rank: '🏅21', text: '🇫🇷 Incroyable! Tu es le meilleur!', flag: '🇫🇷' },
+  { name: 'Swagtan6', color: '#ff6b35', badge: 'AFKE', rank: '🏅1', text: null, gift: '🌹', giftCount: 36, flag: '🇺🇸' },
+  { name: 'hllhulo', color: '#4a9eff', badge: 'AFKE', rank: '🏅2', text: null, gift: '🥞', giftCount: 4, flag: '🇫🇷' },
+  { name: 'Mimikgao', color: '#4ecb8d', badge: 'AFKE', rank: '🏅3', text: null, gift: '🌌', giftCount: 2, flag: '🇯🇵' },
+  { name: 'torcedor_br', color: '#ff7675', badge: null, rank: null, text: '🇧🇷 mano que live perfeita, nunca vi igual!', flag: '🇧🇷' },
+  { name: 'colombia_here', color: '#00b894', badge: null, rank: null, text: '🇨🇴 Colombia presente!! bellísimo', flag: '🇨🇴' },
+  { name: 'uk_viewer', color: '#6c5ce7', badge: 'N.2', rank: '🏅15', text: '🇬🇧 absolute legend mate honestly', flag: '🇬🇧' },
+  { name: 'india_fan', color: '#fdcb6e', badge: null, rank: null, text: '🇮🇳 India loves you!! keep going 🔥🔥', flag: '🇮🇳' },
+  { name: 'russo_live', color: '#b2bec3', badge: null, rank: null, text: '🇷🇺 Привет из России! Отлично!', flag: '🇷🇺' },
+  { name: 'italy_vip', color: '#e17055', badge: 'AFKE', rank: '🏅19', text: null, gift: '🎂', giftCount: 8, flag: '🇮🇹' },
+  { name: 'espanha_torcida', color: '#d63031', badge: null, rank: null, text: '🇪🇸 Vamos España!! eres el mejor!!', flag: '🇪🇸' },
+  { name: 'portugal_aqui', color: '#00cec9', badge: null, rank: null, text: '🇵🇹 Portugal no chat!! muito bom mesmo', flag: '🇵🇹' },
+  { name: 'canada_watcher', color: '#81ecec', badge: null, rank: null, text: '🇨🇦 Canada checking in, this is fire 🔥', flag: '🇨🇦' },
+];
+
+const colors = ['#ff6b35','#4a9eff','#4ecb8d','#fe2c55','#9b59b6','#ffaa00','#fd79a8','#74b9ff','#55efc4','#fdcb6e','#a29bfe','#e17055','#00b894'];
+
+function getColor(name) {
+  let h = 0; for(let c of name) h += c.charCodeAt(0);
+  return colors[h % colors.length];
+}
+
+function addChatMsg(msg) {
+  const box = document.getElementById('chat-msgs');
+  const el = document.createElement('div');
+  el.className = 'cm';
+  const initials = msg.name.substring(0,2).toUpperCase();
+  const col = msg.color || getColor(msg.name);
+  let inner = `<div class="cm-av" style="background:${col}">${initials}</div><div class="cm-body"><div class="cm-top"><span class="cm-name">${msg.name}</span>`;
+  if(msg.flag) inner += `<span style="font-size:11px">${msg.flag}</span>`;
+  if(msg.badge) inner += `<span class="cm-badge afke">${msg.badge}</span>`;
+  if(msg.rank) inner += `<span class="cm-rank">${msg.rank}</span>`;
+  inner += `</div>`;
+  if(msg.gift) {
+    inner += `<div class="cm-gift-line"><span class="cm-gift-emoji">${msg.gift}</span> sent <span class="cm-gift-count">×${msg.giftCount}</span></div>`;
+    // show gift notif in stream
+    showGiftNotif(msg.name, msg.gift, msg.giftCount);
+  } else {
+    inner += `<div class="cm-text">${msg.text}</div>`;
+  }
+  inner += `</div>`;
+  el.innerHTML = inner;
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+  // keep max 40 msgs
+  while(box.children.length > 40) box.removeChild(box.firstChild);
+}
+
+function showGiftNotif(name, emoji, count) {
+  const box = document.getElementById('gift-notifs');
+  const el = document.createElement('div');
+  el.className = 'gift-notif';
+  el.innerHTML = `<div class="gn-av">${emoji}</div><span>${name} sent ${emoji} ×${count}</span>`;
+  box.appendChild(el);
+  setTimeout(() => { el.style.animation = 'fadeOut 0.5s forwards'; setTimeout(()=>el.remove(), 500); }, 2500);
+  while(box.children.length > 3) box.removeChild(box.firstChild);
+}
+
+// Phone chat update
+const phoneComments = document.getElementById('phone-comments');
+function addPhoneComment(name, text) {
+  const el = document.createElement('div');
+  el.className = 'phone-comment';
+  el.innerHTML = `<span class="pc-name">${name}</span><span class="pc-text">${text}</span>`;
+  phoneComments.appendChild(el);
+  while(phoneComments.children.length > 3) phoneComments.removeChild(phoneComments.firstChild);
+}
+
+// Auto chat
+let chatIdx = 0;
+function autoChat() {
+  const msg = chatPool[chatIdx % chatPool.length];
+  chatIdx++;
+  addChatMsg(msg);
+  if(msg.gift) addPhoneComment(msg.name, msg.gift + ' ×' + msg.giftCount);
+  else if(msg.text) addPhoneComment(msg.name, msg.text.substring(0,20) + (msg.text.length>20?'...':''));
+  const delay = 800 + Math.random() * 2200;
+  setTimeout(autoChat, delay);
+}
+
+// Follower toasts
+const toastNames = ['lucas_br','kpop_fan','argentinaNo1','india_star','paris_boy','brasil123','mexico_vip','uk_fan99','canada_king','germany_fan'];
+let toastIdx = 0;
+function showFollowerToast() {
+  const name = toastNames[toastIdx++ % toastNames.length];
+  const toast = document.getElementById('follower-toast');
+  document.getElementById('ft-av').textContent = name[0].toUpperCase();
+  document.getElementById('ft-text').textContent = name + ' começou a te seguir';
+  toast.style.display = 'flex';
+  setTimeout(() => toast.style.display = 'none', 3000);
+  setTimeout(showFollowerToast, 8000 + Math.random() * 12000);
+}
+
+// Gift banner rotation
+const giftBannerData = [
+  'Swagtan6 sent Rose 🌹 ×36',
+  'hllhulo sent Pancakes 🥞 ×4',
+  'Mimikgao sent Universe 🌌 ×2',
+  'italy_vip sent Cake 🎂 ×8',
+  'usa_gang sent Diamond 💎 ×12',
+  'france_vip sent Heart ❤️ ×5',
+];
+let bannerIdx = 0;
+function rotateBanners() {
+  const box = document.getElementById('gift-banners');
+  box.innerHTML = '';
+  for(let i=0;i<3;i++) {
+    const b = document.createElement('div');
+    b.className = 'gift-banner';
+    b.textContent = giftBannerData[(bannerIdx+i) % giftBannerData.length];
+    box.appendChild(b);
+  }
+  bannerIdx++;
+}
+setInterval(rotateBanners, 4000);
+
+// Send chat from input
+function sendChat(e) {
+  if(e.key === 'Enter') {
+    const inp = document.getElementById('chat-input');
+    const txt = inp.value.trim();
+    if(txt) {
+      addChatMsg({ name: 'Você', color: '#fe2c55', text: txt, flag: '🇧🇷' });
+      inp.value = '';
+    }
+  }
+}
+
+// Gift counter increment
+setInterval(() => {
+  const el = document.getElementById('gift-plus');
+  const current = parseInt(el.textContent.replace('+','')) || 899;
+  el.textContent = '+' + (current + Math.floor(Math.random()*5+1));
+  document.getElementById('ph-gift-count').textContent = el.textContent;
+}, 3000);
+
+// Top gifter increment
+setInterval(() => {
+  const el = document.getElementById('tg1-val');
+  const v = parseFloat(el.textContent) || 444.4;
+  el.textContent = (v + (Math.random()*2)).toFixed(1) + 'K';
+}, 5000);
+
+// INIT — populate initial messages
+window.onload = () => {
+  const initMsgs = [
+    chatPool[0], chatPool[1], chatPool[13], chatPool[2], chatPool[14], chatPool[3], chatPool[15], chatPool[4]
+  ];
+  initMsgs.forEach(m => addChatMsg(m));
+  setTimeout(autoChat, 1500);
+  setTimeout(showFollowerToast, 5000);
+};
+</script>
 </body>
 </html>
